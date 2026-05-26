@@ -1,27 +1,23 @@
 #!/bin/bash
 
-# Update system packages
-sudo apt update -y
+# Update system
+sudo yum update -y
 
-# Install required packages
-sudo apt install -y wget apt-transport-https gnupg lsb-release
-
-# Download and add Trivy GPG key
-wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | \
-gpg --dearmor | \
-sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+# Install wget
+sudo yum install -y wget
 
 # Add Trivy repository
-echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] \
-https://aquasecurity.github.io/trivy-repo/deb \
-$(lsb_release -sc) main" | \
-sudo tee /etc/apt/sources.list.d/trivy.list
-
-# Update package list again
-sudo apt update -y
+cat <<EOF | sudo tee /etc/yum.repos.d/trivy.repo
+[trivy]
+name=Trivy repository
+baseurl=https://aquasecurity.github.io/trivy-repo/rpm/releases/\$basearch/
+gpgcheck=1
+enabled=1
+gpgkey=https://aquasecurity.github.io/trivy-repo/rpm/public.key
+EOF
 
 # Install Trivy
-sudo apt install -y trivy
+sudo yum install -y trivy
 
 # Verify installation
 trivy --version
