@@ -1,17 +1,27 @@
 #!/bin/bash
-# Script to install Trivy on an instance
 
-# Install necessary dependencies
-sudo apt-get install wget apt-transport-https gnupg lsb-release -y
+# Update system packages
+sudo apt update -y
 
-# Add the Trivy repository key
-wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | gpg --dearmor | sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
+# Install required packages
+sudo apt install -y wget apt-transport-https gnupg lsb-release
 
-# Add the Trivy repository to the sources list
-echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main" | sudo tee -a /etc/apt/sources.list.d/trivy.list
+# Download and add Trivy GPG key
+wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | \
+gpg --dearmor | \
+sudo tee /usr/share/keyrings/trivy.gpg > /dev/null
 
-# Update package lists
-sudo apt-get update -y
+# Add Trivy repository
+echo "deb [signed-by=/usr/share/keyrings/trivy.gpg] \
+https://aquasecurity.github.io/trivy-repo/deb \
+$(lsb_release -sc) main" | \
+sudo tee /etc/apt/sources.list.d/trivy.list
+
+# Update package list again
+sudo apt update -y
 
 # Install Trivy
-sudo apt-get install trivy -y
+sudo apt install -y trivy
+
+# Verify installation
+trivy --version
