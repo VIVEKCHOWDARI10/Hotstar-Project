@@ -57,10 +57,9 @@ Let's connect and discuss DevSecOps
 
 
 
-
 ``` bash 
-git clone https://github.com/VIVEKCHOWDARI10/hotstar-kubernetes.git Hotstar-Project 
-cd Hotstar-Project
+git clone https://github.com/VIVEKCHOWDARI10/hotstar-kubernetes.git hotstar-project 
+cd hotstar-project
 git init 
 ```
 
@@ -71,6 +70,32 @@ git remote add hotstar  <Hotstar-project git url >
 git remote - v
 git push -u hotstar main --force
 ```
+
+
+IN JIRA , MOVE THE TASK IN TO-DO TO IN -PROGRESS AND START THE PROJECT 
+
+3. Now use your utm or else create an  EC2 instance ( ubuntu , t3.xlarge , keypair for ssh , 15 GiB , for now open all ports in inbound rules or else open ports  for
+* HTTP , HTTPS
+* 8080 for jenkins
+* 9000 for sonarqube
+* 587 for email-smtp
+* 465 for gmail
+) 
+
+4. SSH into the ec2 instance using .pem file and check the architecture of ec2 once
+``` bash
+hostnamectl
+```
+5. clone the  git repo into ec2 ( no need to install git ,git automatically exists/downloaded )
+6. now the process will be same , even if your are using  ec2 or utm
+
+
+``` bash
+cd  hotstar-project
+cd  scripts
+chmod +x *.sh
+```
+7. chmod +x *.sh will give permissions for execution 
 
 
 
