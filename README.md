@@ -193,16 +193,16 @@ password : admin
 ** CONFIGURE JENKINS ** 
 
 
-manage-jenkins-> system -> sonar server -> Add sonarqube url and token 
+manage-jenkins-> system -> sonar qube installations -> name ( SonarQube ) -> Add sonarqube url (include http:// ) and token 
 
-manage-jenkins-> system -> sonar server -> for token click on ADD -> secret text -> add token in secret -> give ID ( you will  call this secret using this ID )
+manage-jenkins-> system -> sonar server -> for token click on ADD -> secret text -> add token in secret -> give ID ( you will  call this secret using this ID ) -> ID( sonar-token )
  
 manage-jenkins-> tools -> jdk -> give name (jdk)  -> select install automatically -> select install from adoptium.net -> select version (17.0.9)
 IF pipeline fails saying architecture not match ,then add manually 
 
 manage-jenkins-> tools -> sonar scanner installations -> give  name (sonar-scanner) -> select install automatically -> select version (7.0.0.4796)
 
-manage-jenkins-> tools -> nodejs -> give  name (nodejs)  -> select install automatically -> select version (17.9.0)
+manage-jenkins-> tools -> nodejs -> give  name (nodejs)  -> select install automatically -> select version (17.9.0 or some require 18 version)
 
 manage-jenkins-> tools -> dependency check installations -> give  name (DC) -> select install automatically -> install from github -> version (12.1.0)
 
@@ -222,7 +222,7 @@ pipeline{
     agent any
     tools{
         jdk 'jdk'
-        nodejs 'node'
+        nodejs 'nodejs'
     }
     environment {
         SCANNER_HOME=tool 'sonar-scanner'
@@ -233,14 +233,15 @@ pipeline{
                 cleanWs()
             }
         }
+   
         stage('Checkout from Git'){
             steps{
               git branch: 'main', credentialsId: 'GIT-TOKEN', url: 'https://github.com/VIVEKCHOWDARI10/Hotstar-Project.git'
             }
         }
-        stage("Sonarqube Analysis "){
+       stage("Sonarqube Analysis "){
             steps{
-                withSonarQubeEnv('sonar-qube') {
+                withSonarQubeEnv('SonarQube') {
                     sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Hotstar \
                     -Dsonar.projectKey=Hotstar '''
                 }
@@ -249,7 +250,7 @@ pipeline{
         stage("quality gate"){
            steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-qube' 
+                    waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
                 }
             } 
         }
@@ -269,13 +270,12 @@ STEPS :
 ``` bash
 https://nvd.nist.gov/developers/request-an-api-key
 ```
-2.give random name -> your email -> personal use/ not listed ->submit ->  go to our email and chek for apikey 
+2.give random name -> your email -> personal use/ not listed ->submit -> go to our email and chek for apikey and replace below one with newone
 
-3.
 
 
 ``` bash
- stage('OWASP FS SCAN') {
+stage('OWASP FS SCAN') {
             steps {
                 dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit --nvdApiKey 8C74A11E-915A-F111-836C-0EBF96DE670D', odcInstallation: 'DC'
                 dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
@@ -286,57 +286,39 @@ https://nvd.nist.gov/developers/request-an-api-key
                 sh "trivy fs . > trivyfs.txt"
             }
         }
-        stage("Docker Build & Push"){
+```
+
+3. now add docker credentials to  build and push the image to docker hub
+
+manage jenkins -> credentials -> select username and password -> username = dockerhub username -> password =  token -> ID ( docker )
+
+for token ,go to docker hub -> profile -> personal access tokens -> permisiions = read and write to pull  and push images -> generate 
+
+NOTE :
+
+docker no longer accept normal passwords,  only tokens 
+
+``` bash
+stage("Docker Build & Push"){
             steps{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
                        sh "docker build -t hotstar ."
-                       sh "docker tag hotstar aseemakram19/hotstar:latest "
-                       sh "docker push aseemakram19/hotstar:latest "
+                       sh "docker tag hotstar VIVEKCHOWDARI10/hotstar:latest "
+                       sh "docker push VIVEKCHOWDARI10/hotstar:latest "
                     }
                 }
             }
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image aseemakram19/hotstar:latest > trivyimage.txt" 
+                sh "trivy image VIVEKCHOWDARI10/hotstar:latest > trivyimage.txt" 
             }
         }
         stage('Deploy to container'){
             steps{
-                sh 'docker run -d --name hotstar -p 3000:3000 aseemakram19/hotstar:latest'
+                sh 'docker run -d --name hotstar -p 3000:3000 VIVEKCHOWDARI10/hotstar:latest'
             }
         }
 
     }
-    post {
-    always {
-        script {
-            def buildStatus = currentBuild.currentResult
-            def buildUser = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')[0]?.userId ?: 'Github User'
-            
-            emailext (
-                subject: "Pipeline ${buildStatus}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """
-                    <p>This is a Jenkins HOTSTAR CICD pipeline status.</p>
-                    <p>Project: ${env.JOB_NAME}</p>
-                    <p>Build Number: ${env.BUILD_NUMBER}</p>
-                    <p>Build Status: ${buildStatus}</p>
-                    <p>Started by: ${buildUser}</p>
-                    <p>Build URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                """,
-                to: 'mohdaseemakram19@gmail.com',
-                from: 'mohdaseemakram19@gmail.com',
-                replyTo: 'mohdaseemakram19@gmail.com',
-                mimeType: 'text/html',
-                attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
-            )
-           }
-       }
-
-    }
-
-}
-```
-
-       
