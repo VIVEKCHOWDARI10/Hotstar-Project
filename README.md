@@ -64,6 +64,15 @@ cd Hotstar-Project
 git init 
 ```
 
+1. create a new repo in  your github ( Hotstar-project) 
+2. go to utm 
+ ``` bash
+git remote add hotstar  <Hotstar-project git url >
+git remote - v
+git push -u hotstar main --force
+```
+
+
 
 
 
