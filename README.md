@@ -314,7 +314,7 @@ stage("Docker Build & Push"){
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image VIVEKCHOWDARI10/hotstar:latest > trivyimage.txt" 
+                sh "trivy image vivekchowdari/hotstar:latest > trivyimage.txt" 
             }
         }
         stage('Deploy to container'){
@@ -437,7 +437,7 @@ pipeline{
         }
         stage("TRIVY"){
             steps{
-                sh "trivy image VIVEKCHOWDARI10/hotstar:latest > trivyimage.txt" 
+                sh "trivy image vivekchowdari/hotstar:latest > trivyimage.txt" 
             }
         }
         stage('Deploy to container'){
