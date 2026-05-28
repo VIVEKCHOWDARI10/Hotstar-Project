@@ -137,6 +137,7 @@ docker images
 docker ps 
 ```
 *** kubectl installation ***
+
 run kubectl  script ( kubectl.sh for ubuntu and  kubectl-centos.sh for centos )
 ``` bash
 sh kubectl-centos.sh
@@ -151,8 +152,9 @@ sh trivy-centos.sh
 aws configure
 ```
 It  Asks :
+```
 AWS Access Key ID:
 AWS Secret Access Key:
 Default region:
 Default output format:
-
+```
