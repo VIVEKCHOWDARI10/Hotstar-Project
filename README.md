@@ -292,11 +292,13 @@ stage('OWASP FS SCAN') {
 
 manage jenkins -> credentials -> select username and password -> username = dockerhub username -> password =  token -> ID ( docker )
 
-for token ,go to docker hub -> profile -> personal access tokens -> permisiions = read and write to pull  and push images -> generate 
+for token ,go to docker hub -> profile -> personal access tokens -> permisiions = read and write to pull  and push images -> generate token -> go and add it in jenkins with username and password 
 
 NOTE :
 
-docker no longer accept normal passwords,  only tokens 
+docker no longer accept normal passwords,  only tokens  
+
+**** most important note *** : Dont add tools for docker , only the token is required because system architecture may different from docker tool , so DO NOT configure Docker tool installation in Jenkins.   Use system Docker directly.
 
 ``` bash
 stage("Docker Build & Push"){
@@ -304,8 +306,8 @@ stage("Docker Build & Push"){
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
                        sh "docker build -t hotstar ."
-                       sh "docker tag hotstar VIVEKCHOWDARI10/hotstar:latest "
-                       sh "docker push VIVEKCHOWDARI10/hotstar:latest "
+                       sh "docker tag hotstar vivekchowdari/hotstar:latest "
+                       sh "docker push vivekchowdari/hotstar:latest "
                     }
                 }
             }
@@ -317,8 +319,10 @@ stage("Docker Build & Push"){
         }
         stage('Deploy to container'){
             steps{
-                sh 'docker run -d --name hotstar -p 3000:3000 VIVEKCHOWDARI10/hotstar:latest'
+                sh 'docker run -d --name hotstar -p 3000:3000 vivekchowdari/hotstar:latest'
             }
         }
 
     }
+```
+
