@@ -104,7 +104,16 @@ Jenkins is build/Run on java
 ls -l
 sh jenkins.sh
 java --version
-
+sudo systemctl status jenkins
+```
+9. now you can access jenkins at port 8080 and the intial password will be saved at
+``` bash
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
+10 . ACCESS JENKINS AT 
+``` bash
+http://<UTM-IP>:8080 or http://<EC2-IP>:8080
+``` 
 
 
 
