@@ -58,11 +58,11 @@ Let's connect and discuss DevSecOps
 
 
 
-''' bash 
+``` bash 
 git clone https://github.com/VIVEKCHOWDARI10/hotstar-kubernetes.git Hotstar-Project 
 cd Hotstar-Project
 git init 
-'''
+```
 
 
 
