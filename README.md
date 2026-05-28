@@ -325,4 +325,42 @@ stage("Docker Build & Push"){
 
     }
 ```
+now we have to setup smtp server ( we  use gmail ) to get notified about build success or failure 
 
+steps :
+
+1. gmail -> manage accounts -> search app passwords -> name = hotstar -> copy that generated app password
+  
+2. manage jenkins -> system -> Email notification -> smtp server = smtp.gmail.com -> suffix = @gmail.com -> advanced ->  use smtp authentication ,  username = your email id , password = app password generated above -> select use SSL -> SMTP port = 465 -> reply address = person email address who wants to get the reply ( usally when we get email build fail we give reply so to whom this reply has to go )
+
+3. manage jenkins -> system ->  Extended email notification -> smtp server = smtp.gmail.com , smtp port = 587 -> advanced -> add credentials username = your mail id ,password = app password generated above -> select use TLS -> default suffix = @gmail.com -> SAVE
+
+
+``` bash
+post {
+    always {
+        script {
+            def buildStatus = currentBuild.currentResult
+            def buildUser = currentBuild.getBuildCauses('hudson.model.Cause$UserIdCause')[0]?.userId ?: 'Github User'
+            
+            emailext (
+                subject: "Pipeline ${buildStatus}: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    <p>This is a Jenkins HOTSTAR CICD pipeline status.</p>
+                    <p>Project: ${env.JOB_NAME}</p>
+                    <p>Build Number: ${env.BUILD_NUMBER}</p>
+                    <p>Build Status: ${buildStatus}</p>
+                    <p>Started by: ${buildUser}</p>
+                    <p>Build URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                """,
+                to: 'vivekchowdari10@gmail.com',
+                from: 'vivekchowdari10@gmail.com',
+                replyTo: 'vivekchowdari10@gmail.com',
+                mimeType: 'text/html',
+                attachmentsPattern: 'trivyfs.txt,trivyimage.txt'
+            )
+           }
+       }
+``` 
+REMEMBER :
+post stage will be at last separate code , after closing  all brackets for stages , it is not part of stages 
