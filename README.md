@@ -119,15 +119,40 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 http://<UTM-IP>:8080 or http://<EC2-IP>:8080
 ``` 
 *** DOCKER INSTALLATION ***
+
 run docker script ( docker.sh for ubuntu and  docker-centos.sh for centos )
 ``` bash
 sh docker-centos.sh
 docker --version
 ```
 *** sonarqube installation ***
-run sonarqube as a docker container 
+
+
+run sonarqube as a docker container :
 ``` bash
 docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
 ```
-
+``` bash 
+docker images
+docker ps 
+```
+*** kubectl installation ***
+run kubectl  script ( kubectl.sh for ubuntu and  kubectl-centos.sh for centos )
+``` bash
+sh kubectl-centos.sh
+```
+11. Run scripts one by one
+``` bash
+sh awscli-centos.sh
+sh trivy-centos.sh
+```
+12. after awscli installation ,configure it
+``` bash
+aws configure
+```
+It  Asks :
+AWS Access Key ID:
+AWS Secret Access Key:
+Default region:
+Default output format:
 
