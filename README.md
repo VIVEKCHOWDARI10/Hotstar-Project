@@ -95,8 +95,15 @@ cd  hotstar-project
 cd  scripts
 chmod +x *.sh
 ```
-7. chmod +x *.sh will give permissions for execution 
+7. chmod +x *.sh will give permissions for execution
+8. Now RUN the jenkins scipt to install jenkins ( jenkins.sh for ubuntu-ec2  and jenkins-centos.sh for centos-utm )
+NOTE :
+Jenkins is build/Run on java 
 
+``` bash
+ls -l
+sh jenkins.sh
+java --version
 
 
 
