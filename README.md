@@ -159,3 +159,56 @@ AWS Secret Access Key:
 Default region:
 Default output format:
 ```
+This you can get it by creating an iam user and then creating the access key in that user 
+
+
+
+OPEN JENKINS AND CONFIGURE 
+
+Install following  plugins :
+
+-> Eclipse temurin installer 
+-> sonarqube scanner 
+->Nodejs plugin 
+-> owasp dependency check 
+->stage view , blue ocean(if needed ) 
+-> jdk
+->docker , docker commons , docker pipeline , docker api , docker-build-step
+-> terraform 
+
+
+OPEN SONARQUBE AND CONNECT IT TO  JENKINS 
+``` bash
+http://<utm-ip>:9000
+```
+
+username :admin
+
+password : admin
+
+ -> now we need to connect the sonarqube and jenkins ,this can be done by creating the token in sonarqube and adding it in  jenkins 
+
+ Administration -> security -> users -> token -> generate token 
+
+** CONFIGURE JENKINS ** 
+
+
+manage-jenkins-> system -> sonar server -> Add sonarqube url and token 
+
+manage-jenkins-> system -> sonar server -> for token click on ADD -> secret text -> add token in secret -> give ID ( you will  call this secret using this ID )
+ 
+manage-jenkins-> tools -> jdk -> give name (jdk)  -> select install automatically -> select install from adoptium.net -> select version (17.0.9)
+
+manage-jenkins-> tools -> sonar scanner installations -> give  name (sonar) -> select install automatically -> select version (7)
+
+manage-jenkins-> tools -> nodejs -> give  name (node)  -> select install automatically -> select version (17)
+
+manage-jenkins-> tools -> dependency check installations -> give  name (DC) -> select install automatically -> install from github -> version (12.10)
+
+add git token in jenkins : git -> settings -> developer settings -> access tokens -> generate token (classic ) -> give permissions as needed 
+
+jenkins -> manage jenkins -> creentials -> select  user and password -> user = git hub name -> password = token generated -> give ID 
+
+** CREATE A PIPELINE ** 
+
+``` bash
