@@ -96,13 +96,17 @@ cd  scripts
 chmod +x *.sh
 ```
 7. chmod +x *.sh will give permissions for execution
+** JENKINS INSTALLATION **
+   
 8. Now RUN the jenkins scipt to install jenkins ( jenkins.sh for ubuntu-ec2  and jenkins-centos.sh for centos-utm )
+
+   
 NOTE :
 Jenkins is build/Run on java 
 
 ``` bash
 ls -l
-sh jenkins.sh
+sh jenkins-centos.sh
 java --version
 sudo systemctl status jenkins
 ```
@@ -110,10 +114,20 @@ sudo systemctl status jenkins
 ``` bash
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 ```
-10 . ACCESS JENKINS AT 
+10 . ACCESS JENKINS AND SETUP AT 
 ``` bash
 http://<UTM-IP>:8080 or http://<EC2-IP>:8080
 ``` 
-
+*** DOCKER INSTALLATION ***
+run docker script ( docker.sh for ubuntu and  docker-centos.sh for centos )
+``` bash
+sh docker-centos.sh
+docker --version
+```
+*** sonarqube installation ***
+run sonarqube as a docker container 
+``` bash
+docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
+```
 
 
