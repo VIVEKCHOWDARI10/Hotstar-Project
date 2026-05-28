@@ -198,7 +198,7 @@ manage-jenkins-> system -> sonar qube installations -> name ( SonarQube ) -> Add
 manage-jenkins-> system -> sonar server -> for token click on ADD -> secret text -> add token in secret -> give ID ( you will  call this secret using this ID ) -> ID( sonar-token )
  
 manage-jenkins-> tools -> jdk -> give name (jdk)  -> select install automatically -> select install from adoptium.net -> select version (17.0.9)
-IF pipeline fails saying architecture not match ,then add manually 
+IF pipeline fails saying architecture not match ,then add path to it  manually   ( i manully gave path )
 
 manage-jenkins-> tools -> sonar scanner installations -> give  name (sonar-scanner) -> select install automatically -> select version (7.0.0.4796)
 
@@ -221,7 +221,7 @@ sonarqube -> configuration -> webhooks -> create webhook -> add  url as ``` bash
 pipeline{
     agent any
     tools{
-        jdk 'jdk'
+        jdk 'jdk17'
         nodejs 'nodejs'
     }
     environment {
