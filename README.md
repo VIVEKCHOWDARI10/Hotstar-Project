@@ -145,7 +145,8 @@ sh kubectl-centos.sh
 11. Run scripts one by one
 ``` bash
 sh awscli-centos.sh
-sh trivy-centos.sh
+sh trivy.sh
+sh terraform-centos.sh 
 ```
 12. after awscli installation ,configure it
 ``` bash
