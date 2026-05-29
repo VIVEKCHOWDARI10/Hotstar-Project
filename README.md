@@ -651,4 +651,10 @@ SSH  into  monitoring-server ec2 instance using the key terra.pem
 
 * monitoring-server -> security -> security-groups -> add inbound rules to allow ports
 * clone the repo or else copy the grafana-centos.sh into this ec2 instance and run the script
-  
+
+``` bash
+chmod +x grafana-centos.sh
+sh grafana-centos.sh
+```
+
+
