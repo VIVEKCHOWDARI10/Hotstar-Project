@@ -375,7 +375,7 @@ COMPLETE PIPELINE :
 pipeline{
     agent any
     tools{
-        jdk 'jdk'
+        jdk 'jdk17'
         nodejs 'nodejs'
     }
     environment {
