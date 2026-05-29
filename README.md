@@ -536,4 +536,107 @@ AWS SECRET ACCESS KEY ID :
 DEFAULT REGION :  ( just press enter make it default )
 ``` 
 
+* now create eks cluster
+  
+* This will create  two nodes ( two zones specified ) means two ec2 instances  and a eks cluster in aws 
+``` bash
+eksctl create cluster --name cloudaseem-cluster4 --region ap-south-1 --node-type t2.medium  --zones ap-south-1a,ap-south-1b
+```
+* now u have to create pods in this EKS
 
+``` bash
+cd K8S
+kubectl apply -f manifest.yml
+
+```
+
+*** CREATING MONITORING SERVER USING TERRAFORM  *** 
+
+* go to jenkins -> create a pipeline ( monitoring server ) -> add jenkins file -> then go and add two credentials( secret text ) for access key id (ID = AWS_ACCESS_KEY_ID ) and secret access key ( ID = AWS_SECRET_ACCESS_KEY ) so we will use  them in jenkins file 
+
+* this pipeline is a parameterized pipieline so -> select this project is parameterized -> choice parameter -> name = action , choices = apply ,destroy -> apply to create resources and destroy to delete all of them
+
+* go to aws and click on create key pair -> name = terra ->  RSA ->  .pem or .ppk -> create it -> we use this tera in this jenkins pipeline
+
+* build the pipeline with parameter apply , if success we can see new  ec2 instance (monitoring-server )
+``` bash
+pipeline {
+    agent any
+
+    environment {
+        AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
+        AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
+    }
+
+    stages {
+        stage('Checkout from Git') {                        
+            steps {
+                git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/Aseemakram19/hotstar-kubernetes.git'
+            }
+        }
+
+        stage('Terraform version') {
+            steps {
+                sh 'terraform --version'
+            }
+        }
+
+        stage('Terraform init') {
+            steps {
+                dir('Terraform') {
+                    sh '''
+                    terraform init \
+                    -backend-config="access_key=$AWS_ACCESS_KEY_ID" \
+                    -backend-config="secret_key=$AWS_SECRET_ACCESS_KEY"
+                    '''
+                }
+            }
+        }
+
+        stage('Terraform validate') {
+            steps {
+                dir('Terraform') {
+                    sh 'terraform validate'
+                }
+            }
+        }
+
+        stage('Terraform plan') {
+            steps {
+                dir('Terraform') {
+                    sh '''
+                    terraform plan \
+                    -var="access_key=$AWS_ACCESS_KEY_ID" \
+                    -var="secret_key=$AWS_SECRET_ACCESS_KEY"
+                    '''
+                }
+            }
+        }
+
+        stage('Terraform apply/destroy') {
+            steps {
+                dir('Terraform') {
+                    sh '''
+                    terraform ${action} --auto-approve \
+                    -var="access_key=$AWS_ACCESS_KEY_ID" \
+                    -var="secret_key=$AWS_SECRET_ACCESS_KEY"
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Terraform execution completed successfully!'
+        }
+        failure {
+            echo '❌ Terraform execution failed! Check the logs.'
+        }
+    }
+}
+
+```
+SSH  into  monitoring-server ec2 instance using the key terra.pem 
+
+* monitoring-server -> security -> security-groups -> add inbound rules to allow ports 
