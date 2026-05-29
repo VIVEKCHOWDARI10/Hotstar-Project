@@ -334,7 +334,7 @@ steps :
   
 2. manage jenkins -> system -> Email notification -> smtp server = smtp.gmail.com -> suffix = @gmail.com -> advanced ->  use smtp authentication ,  username = your email id , password = app password generated above -> select use SSL -> SMTP port = 465 -> reply address = person email address who wants to get the reply ( usally when we get email build fail we give reply so to whom this reply has to go )
 
-3. manage jenkins -> system ->  Extended email notification -> smtp server = smtp.gmail.com , smtp port = 587 -> advanced -> add credentials username = your mail id ,password = app password generated above -> select use TLS -> default suffix = @gmail.com -> SAVE
+3. manage jenkins -> system ->  Extended email notification -> smtp server = smtp.gmail.com , smtp port = 587 -> advanced -> add credentials username = your mail id ,password = app password generated above -> ID ( smtp-gmail ) -> select use TLS -> default suffix = @gmail.com -> SAVE
 
 
 ``` bash
