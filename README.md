@@ -547,8 +547,18 @@ eksctl create cluster --name cloudaseem-cluster4 --region ap-south-1 --node-type
 ``` bash
 cd K8S
 kubectl apply -f manifest.yml
-
+kubectl get all 
 ```
+* now copy the EXTERNAL IP  of the LOAD BALANCER service  and paste it in browser to access the application 
+
+** CLOUD FLARE  FOR DNS** 
+
+cloudflare -> DNS -> Add record -> type = CNAME ,, name = hotstar ,, target = loadbalancer service-EXTERNAL IP -> SAVE 
+
+* Access application using ( SSL certification is also applied / issued for this application )
+
+  ``` bash
+  hotstar.cloudaseem.com 
 
 *** CREATING MONITORING SERVER USING TERRAFORM  *** 
 
