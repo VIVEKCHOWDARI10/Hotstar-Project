@@ -175,7 +175,8 @@ Install following  plugins :
 -> jdk
 ->docker , docker commons , docker pipeline , docker api , docker-build-step
 -> terraform 
-
+-> email extension plugun 
+-> workspace cleanup plugin 
 
 OPEN SONARQUBE AND CONNECT IT TO  JENKINS 
 ``` bash
