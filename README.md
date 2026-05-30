@@ -566,9 +566,9 @@ cloudflare -> DNS -> Add record -> type = CNAME ,, name = hotstar ,, target = lo
 
 * this pipeline is a parameterized pipieline so -> select this project is parameterized -> choice parameter -> name = action , choices = apply ,destroy -> apply to create resources and destroy to delete all of them
 
-* go to aws and click on create key pair -> name = terra ->  RSA ->  .pem or .ppk -> create it -> we use this tera in this jenkins pipeline
+* go to aws and click on create key pair -> name = terra ->  RSA ->  .pem or .ppk -> create it -> we use this terra in this jenkins pipeline
 
-* build the pipeline with parameter apply , if success we can see new  ec2 instance (monitoring-server )
+* build the pipeline with parameter apply , if success we can see new  ec2 instance (monitoring-server ) in AWS 
 ``` bash
 pipeline {
     agent any
@@ -649,12 +649,163 @@ pipeline {
 ```
 SSH  into  monitoring-server ec2 instance using the key terra.pem 
 
-* monitoring-server -> security -> security-groups -> add inbound rules to allow ports
+* monitoring-server -> security -> security-groups -> add inbound rules to allow ports for grafana  and all exporters 
 * clone the repo or else copy the grafana-centos.sh into this ec2 instance and run the script
 
 ``` bash
 chmod +x grafana-centos.sh
 sh grafana-centos.sh
 ```
+* grafana is accessible at port 3000
+``` bash 
+http://<monitoring-server-ip>:3000
+email or username : admin
+password : admin
+```
+  
+** NOW DOWNLOAD PROMETHEUS AND EXPORTERS **
+
+* Go to this website and download required  exporters 
+
+   ``` bash
+  https://prometheus.io/download/
+   ```
+
+  * prometheus :
+  ``` bash
+  wget https://github.com/prometheus/prometheus/releases/latest/download/prometheus-linux-amd64.tar.gz
+
+  tar -xvzf prometheus-linux-amd64.tar.gz
+
+  cd prometheus-linux-amd64
+
+  ./prometheus &
+   ```
+  * Node Exporter
+  ``` bash
+  wget https://github.com/prometheus/node_exporter/releases/latest/download/node_exporter-linux-amd64.tar.gz
+
+  tar -xvzf node_exporter-linux-amd64.tar.gz
+
+  cd node_exporter-linux-amd64
+
+  ./node_exporter &
+  ```
+  * Alertmanager
+  ``` bash
+  wget https://github.com/prometheus/alertmanager/releases/latest/download/alertmanager-linux-amd64.tar.gz
+
+  tar -xvzf alertmanager-linux-amd64.tar.gz
+
+  cd alertmanager-linux-amd64
+
+  ./alertmanager &
+   ```
+  * Blackbox Exporter
+  ``` bash
+  wget https://github.com/prometheus/blackbox_exporter/releases/latest/download/blackbox_exporter-linux-amd64.tar.gz
+
+  tar -xvzf blackbox_exporter-linux-amd64.tar.gz
+
+  cd blackbox_exporter-linux-amd64
+
+  ./blackbox_exporter &
+  ```
+  * Pushgateway
+  ``` bash
+  wget https://github.com/prometheus/pushgateway/releases/latest/download/pushgateway-linux-amd64.tar.gz
+
+  tar -xvzf pushgateway-linux-amd64.tar.gz
+
+  cd pushgateway-linux-amd64
+
+  ./pushgateway &
+  ```
+
+  * PORTS :
+``` bash
+  
+Prometheus	     ->   9090
+Node Exporter   ->   9100  ( exposes metrics at http://< server-ip or ec2 ip >:9100/metrics ) 
+Alertmanager	   ->   9093
+Blackbox Exporter	-> 9115
+Pushgateway	    ->   9091
+ ``` 
+INSTALL NET-TOOLS 
+``` bash
+sudo yum install net-tools -y
+netstat -tulnp
+```
+* Now u have to add thhis blackbox-exporter to the targets of promethues to get the metrics
+``` bash
+cd prometheus-linux-amd64
+ls -l
+nano peomethues.yml
+```
+add this in the scrape_configs : ( for black box ) 
+
+``` bash
+- job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Look for a HTTP 200 response.
+    static_configs:
+      - targets:
+          - http://prometheus.io      # Target to probe with HTTP.
+          - http://< application running in docker - IP >:<port number -3000>     # Target to probe with HTTPS.
+          - http://my-app-alb.ap-south-1.elb.amazonaws.com        # application running in eks -loadbalancer external IP
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 13.232.214.2:9115  # blackbox exporter's running IP 
+```
+``` bash
+ - http://my-app-alb.ap-south-1.elb.amazonaws.com
+                    OR
+ - http://hotstar.cloudaseem.com:443
+```
+for remaining exporters : ( no need of application url as these monitors machine itself )
+``` bash
+- job_name: 'node_exporter'
+    static_configs:
+      - targets: ['localhost:9100']
+
+  # Alertmanager
+  - job_name: 'alertmanager'
+    static_configs:
+      - targets: ['localhost:9093']
+
+  # Pushgateway
+  - job_name: 'pushgateway'
+    static_configs:
+      - targets: ['localhost:9091']
+```
+
+``` bash
+sudo systemctl restart prometheus
+```
+* go to promethues (http://< server-ip or ec2 ip >:9090 )  -> targets -> u can find the state of these exporters
+
+**  CONNECTING PROMETHEUS TO GRAFANA ** 
+
+* go to grafana (http://<monitoring-server-ip>:3000) -> Data sources -> Add data source -> Prometheus -> click on connection and enter the url of prometheus -> save and test
+
+* grafana -> Dashboards -> new dashboard -> import -> click on the grafana dashboards link -> search blackbox_exporter -> open it and copy the ID -> go back and pate the ID and click LOAD -> select the prometheus data source that we added before -> Import
+
+* Same for the nodeport exporter -> search ,copy and paste -> load
+
+
+** FINAL STEP (Destroy the resoures created ) ** 
+
+* Go to jenkins and build it with destroy parameter ( it will delete the created resources using terraform ) -> Monitoring server is deleted 
+* Delete the created eks cluster
+``` bash
+eksctl delete cluster --name cloudaseem-cluster4 --region ap-south-1
+```
+
+* go to aws -> instances ->click  stopped instances  -> terminate all of them 
 
 
