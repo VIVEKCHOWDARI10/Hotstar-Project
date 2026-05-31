@@ -569,7 +569,7 @@ cloudflare -> DNS -> Add record -> type = CNAME ,, name = hotstar ,, target = lo
 
 * build the pipeline with parameter apply , if success we can see new  ec2 instance (monitoring-server ) in AWS
 
-
+* in terraform in the variable.tf :
 
     Code	                      Meaning
 default = "insert"	   -> Placeholder/default value
