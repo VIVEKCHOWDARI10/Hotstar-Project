@@ -833,7 +833,9 @@ sudo systemctl restart prometheus
 * Go to jenkins and build it with destroy parameter ( it will delete the created resources using terraform ) -> Monitoring server is deleted 
 * Delete the created eks cluster
 ``` bash
-eksctl delete cluster --name cloudaseem-cluster4 --region ap-south-1
+eksctl delete cluster \
+  --name my-cluster \
+  --region ap-south-1
 ```
 
 * go to aws -> instances ->click  stopped instances  -> terminate all of them 
