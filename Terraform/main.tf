@@ -7,16 +7,19 @@ terraform {
   }
 }
 
-# Configure AWS Provider
+# Configure the AWS Provider
 provider "aws" {
-  region = "ap-south-1"
+  region     = "ap-south-1"
+  access_key = var.access_key
+  secret_key = var.secret_key
 }
 
-# Create Security Group
+# Create Security Group for the EC2 Instance
 resource "aws_security_group" "ec2_security_group" {
   name        = "ec2 security group"
-  description = "allow access on ports 22"
+  description = "allow access on port 22"
 
+  # Allow SSH Access
   ingress {
     description = "ssh access"
     from_port   = 22
@@ -25,6 +28,7 @@ resource "aws_security_group" "ec2_security_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # Allow Outbound Traffic
   egress {
     from_port   = 0
     to_port     = 0
@@ -39,10 +43,10 @@ resource "aws_security_group" "ec2_security_group" {
 
 # Create EC2 Instance
 resource "aws_instance" "Monitoring_server" {
-  ami                    = "ami-00bb6a80f01f03502"
-  instance_type          = "t2.medium"
-  vpc_security_group_ids = [aws_security_group.ec2_security_group.id]
-  key_name               = var.key_name
+  ami             = "ami-00bb6a80f01f03502"
+  instance_type   = "t2.medium"
+  security_groups = [aws_security_group.ec2_security_group.name]
+  key_name        = var.key_name
 
   tags = {
     Name = var.instance_name
