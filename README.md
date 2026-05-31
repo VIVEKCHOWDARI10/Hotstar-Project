@@ -531,8 +531,20 @@ AWS SECRET ACCESS KEY ID :
 DEFAULT REGION :  ( just press enter make it default )
 ``` 
 
-* now create eks cluster
-  
+* now create eks cluster ,before you should have one default vpc
+``` bash
+aws ec2 create-default-vpc --region ap-south-1
+```
+```
+aws ec2 describe-vpcs \
+--filters Name=isDefault,Values=true \
+--region ap-south-1
+```  
+ THis is the VPC ID 
+
+ * why vpc ?
+ * An EC2 instance is a virtual server in AWS, but every server needs a network to communicate with other systems and the internet. In AWS, that network is called a VPC (Virtual Private Cloud). A VPC provides IP addresses, routing, internet connectivity, and security boundaries for AWS resources. When you create an EC2 instance, AWS must know which VPC and subnet to place it in.
+   
 * This will create one node, means one ec2 instance  and a eks cluster in aws 
 ``` bash
 eksctl create cluster \
@@ -572,7 +584,7 @@ cloudflare -> DNS -> Add record -> type = CNAME ,, name = hotstar ,, target = lo
 * in terraform in the variable.tf :
 
     Code	                      Meaning
-default = "insert"	   -> Placeholder/default value
+default = "insert"	   -> Placeholder/default value ( the "insert" values are ignored and replaced by the real values from Jenkins. )
 sensitive = true	     -> Hide the value from logs
 {}	= No default value;   -> value must be supplied
 ``` bash
@@ -653,7 +665,7 @@ pipeline {
 }
 
 ```
-SSH  into  monitoring-server ec2 instance using the key terra.pem 
+SSH  into  monitoring-server ec2 instance using the key terra.pem  ( dont forget this chmod +x terra.pem ) dont forget that u downloaded that .pem file in mac not utm 
 
 * monitoring-server -> security -> security-groups -> add inbound rules to allow ports for grafana  and all exporters 
 * clone the repo or else copy the grafana-centos.sh into this ec2 instance and run the script
@@ -689,11 +701,11 @@ password : admin
    ```
   * Node Exporter
   ``` bash
-  wget https://github.com/prometheus/node_exporter/releases/latest/download/node_exporter-linux-amd64.tar.gz
+  wget https://github.com/prometheus/node_exporter/releases/download/v1.8.1/node_exporter-1.8.1.linux-amd64.tar.gz
 
-  tar -xvzf node_exporter-linux-amd64.tar.gz
+  tar -xvzf node_exporter-1.8.1.linux-amd64.tar.gz
 
-  cd node_exporter-linux-amd64
+  cd node_exporter-1.8.1.linux-amd64
 
   ./node_exporter &
   ```
@@ -739,12 +751,12 @@ Pushgateway	    ->   9091
  ``` 
 INSTALL NET-TOOLS 
 ``` bash
-sudo yum install net-tools -y
+sudo yum install net-tools -y   or  sudo apt install net-tools -y
 netstat -tulnp
 ```
 * Now u have to add thhis blackbox-exporter to the targets of promethues to get the metrics
 ``` bash
-cd prometheus-linux-amd64
+cd prometheus-linux-amd64   #  ls to get this file name correctly 
 ls -l
 nano peomethues.yml
 ```
@@ -774,6 +786,10 @@ add this in the scrape_configs : ( for black box )
  - http://hotstar.cloudaseem.com:443
 ```
 for remaining exporters : ( no need of application url as these monitors machine itself )
+
+
+Prometheus and Node Exporter are running on the SAME EC2 machine then 
+targets: ['localhost:9100']
 ``` bash
 - job_name: 'node_exporter'
     static_configs:
@@ -792,6 +808,14 @@ for remaining exporters : ( no need of application url as these monitors machine
 
 ``` bash
 sudo systemctl restart prometheus
+```
+           OR 
+ ``` bash
+  ps -ef | grep prometheus
+  kill -9 <PID>
+  cd /tmp/prometheus-*
+  ./prometheus &
+ 
 ```
 * go to promethues (http://< server-ip or ec2 ip >:9090 )  -> targets -> u can find the state of these exporters
 
