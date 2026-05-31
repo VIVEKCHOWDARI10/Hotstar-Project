@@ -567,7 +567,14 @@ cloudflare -> DNS -> Add record -> type = CNAME ,, name = hotstar ,, target = lo
 
 * go to aws and click on create key pair -> name = terra ->  RSA ->  .pem or .ppk -> create it -> we use this terra in this jenkins pipeline
 
-* build the pipeline with parameter apply , if success we can see new  ec2 instance (monitoring-server ) in AWS 
+* build the pipeline with parameter apply , if success we can see new  ec2 instance (monitoring-server ) in AWS
+
+
+
+    Code	                      Meaning
+default = "insert"	   -> Placeholder/default value
+sensitive = true	     -> Hide the value from logs
+{}	= No default value;   -> value must be supplied
 ``` bash
 pipeline {
     agent any
