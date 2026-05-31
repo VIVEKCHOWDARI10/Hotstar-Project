@@ -691,52 +691,72 @@ password : admin
 
   * prometheus :
   ``` bash
-  wget https://github.com/prometheus/prometheus/releases/latest/download/prometheus-linux-amd64.tar.gz
+  # 1. Download
+  wget https://github.com/prometheus/prometheus/releases/download/v2.54.1/prometheus-2.54.1.linux-amd64.tar.gz
 
-  tar -xvzf prometheus-linux-amd64.tar.gz
+  # 2. Extract
+  tar -xvzf prometheus-2.54.1.linux-amd64.tar.gz
 
-  cd prometheus-linux-amd64
+  # 3. Move into folder
+  cd prometheus-2.54.1.linux-amd64
 
+  # 4. Run Prometheus
   ./prometheus &
    ```
   * Node Exporter
   ``` bash
+  # Download
   wget https://github.com/prometheus/node_exporter/releases/download/v1.8.1/node_exporter-1.8.1.linux-amd64.tar.gz
 
+  # Extract
   tar -xvzf node_exporter-1.8.1.linux-amd64.tar.gz
 
+  # Enter folder
   cd node_exporter-1.8.1.linux-amd64
 
+  # Run node exporter
   ./node_exporter &
   ```
   * Alertmanager
   ``` bash
-  wget https://github.com/prometheus/alertmanager/releases/latest/download/alertmanager-linux-amd64.tar.gz
+  # 1. Download
+  wget https://github.com/prometheus/alertmanager/releases/download/v0.27.0/alertmanager-0.27.0.linux-amd64.tar.gz
 
-  tar -xvzf alertmanager-linux-amd64.tar.gz
+  # 2. Extract
+  tar -xvzf alertmanager-0.27.0.linux-amd64.tar.gz
+ 
+  # 3. Enter folder
+  cd alertmanager-0.27.0.linux-amd64
 
-  cd alertmanager-linux-amd64
-
+  # 4. Run Alertmanager
   ./alertmanager &
    ```
   * Blackbox Exporter
   ``` bash
-  wget https://github.com/prometheus/blackbox_exporter/releases/latest/download/blackbox_exporter-linux-amd64.tar.gz
+  # 1. Download
+   wget https://github.com/prometheus/blackbox_exporter/releases/download/v0.25.0/blackbox_exporter-0.25.0.linux-amd64.tar.gz
 
-  tar -xvzf blackbox_exporter-linux-amd64.tar.gz
+  # 2. Extract
+  tar -xvzf blackbox_exporter-0.25.0.linux-amd64.tar.gz
 
-  cd blackbox_exporter-linux-amd64
+  # 3. Enter folder
+  cd blackbox_exporter-0.25.0.linux-amd64
 
+  # 4. Run blackbox exporter
   ./blackbox_exporter &
   ```
   * Pushgateway
   ``` bash
-  wget https://github.com/prometheus/pushgateway/releases/latest/download/pushgateway-linux-amd64.tar.gz
+   # 1. Download
+  wget https://github.com/prometheus/pushgateway/releases/download/v1.9.0/pushgateway-1.9.0.linux-amd64.tar.gz
 
-  tar -xvzf pushgateway-linux-amd64.tar.gz
+  # 2. Extract
+  tar -xvzf pushgateway-1.9.0.linux-amd64.tar.gz
 
-  cd pushgateway-linux-amd64
+  # 3. Enter folder
+  cd pushgateway-1.9.0.linux-amd64
 
+  # 4. Run Pushgateway
   ./pushgateway &
   ```
 
@@ -758,7 +778,7 @@ netstat -tulnp
 ``` bash
 cd prometheus-linux-amd64   #  ls to get this file name correctly 
 ls -l
-nano peomethues.yml
+nano peomethues.yml       # check the file clearly it is just an sample one 
 ```
 add this in the scrape_configs : ( for black box ) 
 
