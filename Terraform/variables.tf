@@ -5,3 +5,11 @@ variable "instance_name" {
 variable "key_name" {
   default = "terra"
 }
+
+variable "access_key" {
+  default = "insert"
+}
+
+variable "secret_key" {
+  default = "insert"
+}
