@@ -533,9 +533,13 @@ DEFAULT REGION :  ( just press enter make it default )
 
 * now create eks cluster
   
-* This will create  two nodes ( two zones specified ) means two ec2 instances  and a eks cluster in aws 
+* This will create one node, means one ec2 instance  and a eks cluster in aws 
 ``` bash
-eksctl create cluster --name cloudaseem-cluster4 --region ap-south-1 --node-type t2.medium  --zones ap-south-1a,ap-south-1b
+eksctl create cluster \
+  --name my-cluster \
+  --region ap-south-1 \
+  --node-type t2.medium \
+  --nodes 1
 ```
 * now u have to create pods in this EKS
 
@@ -576,7 +580,7 @@ pipeline {
     stages {
         stage('Checkout from Git') {                        
             steps {
-                git branch: 'main', credentialsId: 'github-token', url: 'https://github.com/Aseemakram19/hotstar-kubernetes.git'
+               git branch: 'main', credentialsId: 'GIT-TOKEN', url: 'https://github.com/VIVEKCHOWDARI10/Hotstar-Project.git'
             }
         }
 
