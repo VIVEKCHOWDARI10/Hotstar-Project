@@ -98,7 +98,7 @@ run docker script ( docker.sh for ubuntu and  docker-centos.sh for centos )
 sh docker-centos.sh
 docker --version
 ```
-*** sonarqube installation ***
+### sonarqube installation 
 
 
 run sonarqube as a docker container :
