@@ -109,6 +109,7 @@ docker run -d --name sonar -p 9000:9000 sonarqube:lts-community
 docker images
 docker ps 
 ```
+--- 
 *** kubectl installation ***
 
 run kubectl  script ( kubectl.sh for ubuntu and  kubectl-centos.sh for centos )
@@ -134,7 +135,7 @@ Default output format:
 ```
 This you can get it by creating an iam user and then creating the access key in that user 
 
-
+---
 
 OPEN JENKINS AND CONFIGURE 
 
@@ -154,15 +155,13 @@ Install following  plugins :
 OPEN SONARQUBE AND CONNECT IT TO  JENKINS 
 ``` bash
 http://<utm-ip>:9000
-```
 
 username :admin
-
 password : admin
+``` 
+* -> now we need to connect the sonarqube and jenkins ,this can be done by creating the token in sonarqube and adding it in  jenkins 
 
- -> now we need to connect the sonarqube and jenkins ,this can be done by creating the token in sonarqube and adding it in  jenkins 
-
- Administration -> security -> users -> token -> generate token 
+* Administration -> security -> users -> token -> generate token 
 
 ** CONFIGURE JENKINS ** 
 
