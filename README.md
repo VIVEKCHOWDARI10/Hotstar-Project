@@ -91,7 +91,7 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 http://<UTM-IP>:8080 or http://<EC2-IP>:8080
 ```
 ---
-** DOCKER INSTALLATION 
+# 🚀 DOCKER INSTALLATION 
 
 run docker script ( docker.sh for ubuntu and  docker-centos.sh for centos )
 ``` bash
