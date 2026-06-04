@@ -91,7 +91,7 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 http://<UTM-IP>:8080 or http://<EC2-IP>:8080
 ```
 ---
-## 🐳 Docker Installation
+## 🐳 DOCKER INSTALLATION :
 
 run docker script ( docker.sh for ubuntu and  docker-centos.sh for centos )
 ``` bash
@@ -99,7 +99,7 @@ sh docker-centos.sh
 docker --version
 ```
 --- 
-## sonarqube installation 
+## 🔧 sonarqube installation 
 
 
 run sonarqube as a docker container :
@@ -111,7 +111,7 @@ docker images
 docker ps 
 ```
 --- 
-##  KUBECTL INSTALLATION  :
+## 🔧 KUBECTL INSTALLATION  :
 
 run kubectl  script ( kubectl.sh for ubuntu and  kubectl-centos.sh for centos )
 ``` bash
@@ -536,7 +536,7 @@ kubectl apply -f manifest.yml
 kubectl get all 
 ```
 * now copy the EXTERNAL IP  of the LOAD BALANCER service  and paste it in browser to access the application
-  
+---
 ### CLOUD FLARE  FOR DNS :
 
 cloudflare -> DNS -> Add record -> type = CNAME ,, name = hotstar ,, target = loadbalancer service-EXTERNAL IP -> SAVE 
@@ -656,7 +656,7 @@ http://<monitoring-server-ip>:3000
 email or username : admin
 password : admin
 ```
-  
+---  
 ##  DOWNLOAD PROMETHEUS AND EXPORTERS :
 
 * Go to this website and download required  exporters 
@@ -736,21 +736,20 @@ password : admin
   ./pushgateway &
   ```
 
-  * PORTS :
+   PORTS :
 ``` bash
-  
-Prometheus	     ->   9090
-Node Exporter   ->   9100  ( exposes metrics at http://< server-ip or ec2 ip >:9100/metrics ) 
-Alertmanager	   ->   9093
-Blackbox Exporter	-> 9115
-Pushgateway	    ->   9091
+   Prometheus	     ->   9090
+   Node Exporter   ->   9100  ( exposes metrics at http://< server-ip or ec2 ip >:9100/metrics ) 
+   Alertmanager	   ->   9093
+   Blackbox Exporter	-> 9115
+   Pushgateway	    ->   9091
  ``` 
 INSTALL NET-TOOLS 
 ``` bash
 sudo yum install net-tools -y   or  sudo apt install net-tools -y
 netstat -tulnp
 ```
-* Now u have to add thhis blackbox-exporter to the targets of promethues to get the metrics
+* Now u have to add this blackbox-exporter to the targets of promethues to get the metrics
 ``` bash
 cd prometheus-linux-amd64   #  ls to get this file name correctly 
 ls -l
@@ -778,7 +777,7 @@ add this in the scrape_configs : ( for black box )
 ```
 ``` bash
  - http://my-app-alb.ap-south-1.elb.amazonaws.com
-                    OR
+                    OR                  
  - http://hotstar.cloudaseem.com:443
 ```
 for remaining exporters : ( no need of application url as these monitors machine itself )
@@ -813,8 +812,8 @@ sudo systemctl restart prometheus
  
 ```
 * go to promethues (http://< server-ip or ec2 ip >:9090 )  -> targets -> u can find the state of these exporters
-
-## CONNECTING PROMETHEUS TO GRAFANA 
+---
+## CONNECTING PROMETHEUS TO GRAFANA :
 
 * go to grafana (http://<monitoring-server-ip>:3000) -> Data sources -> Add data source -> Prometheus -> click on connection and enter the url    of prometheus -> save and test
 
