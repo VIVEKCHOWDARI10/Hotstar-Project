@@ -1,5 +1,5 @@
-## Hi there! this my new project
-**Welcome to the Hotstart App Deployment project! This project demonstrates how to deploy a Hotstar Next.js application on Kubernetes cluster using modern DevOps tools, practices and following a DevSecOps approach.**
+## 🚀 Hotstar Application Deployment on Kubernetes (DevSecOps Project)
+**Welcome to the Hotstart App Deployment project! This project demonstrates how to deploy a Hotstar Next.js application on Kubernetes cluster using modern DevOps tools, practices and following a DevSecOps approach,including CI/CD with Jenkins, security scanning with OWASP Dependency Check and Trivy, code quality analysis with SonarQube, infrastructure provisioning with Terraform, and monitoring using Prometheus and Grafana.**
 
 ## 🛠️ **Tools & Services Used**
 
@@ -44,7 +44,7 @@ git push -u hotstar main --force
 ```
 
 
- * IN JIRA , MOVE THE TASK IN TO-DO TO IN -PROGRESS AND START THE PROJECT 
+ * IN JIRA , MOVE THE TASK FROM  TO-DO TO IN -PROGRESS AND START THE PROJECT 
 
 3. Now use your utm or else create an  EC2 instance ( ubuntu , t3.xlarge , keypair for ssh , 15 GiB , for now open all ports in inbound rules or else open ports  for
 * HTTP , HTTPS
@@ -98,7 +98,8 @@ run docker script ( docker.sh for ubuntu and  docker-centos.sh for centos )
 sh docker-centos.sh
 docker --version
 ```
-### sonarqube installation 
+--- 
+## sonarqube installation 
 
 
 run sonarqube as a docker container :
@@ -137,20 +138,20 @@ This you can get it by creating an iam user and then creating the access key in 
 
 ---
 
-OPEN JENKINS AND CONFIGURE 
+## OPEN JENKINS AND CONFIGURE 
 
 Install following  plugins :
 
--> Eclipse temurin installer 
--> sonarqube scanner 
-->Nodejs plugin 
--> owasp dependency check 
-->stage view , blue ocean(if needed ) 
--> jdk
-->docker , docker commons , docker pipeline , docker api , docker-build-step
--> terraform 
--> email extension plugun 
--> workspace cleanup plugin 
+*  Eclipse temurin installer
+*  sonarqube scanner 
+*  Nodejs plugin 
+*  owasp dependency check 
+*  stage view , blue ocean(if needed ) 
+*  jdk
+*  docker , docker commons , docker pipeline , docker api , docker-build-step
+*  terraform 
+*  email extension plugun 
+*  workspace cleanup plugin 
 
 OPEN SONARQUBE AND CONNECT IT TO  JENKINS 
 ``` bash
@@ -162,33 +163,33 @@ password : admin
 * -> now we need to connect the sonarqube and jenkins ,this can be done by creating the token in sonarqube and adding it in  jenkins 
 
 * Administration -> security -> users -> token -> generate token 
+---
+## CONFIGURE JENKINS 
 
-** CONFIGURE JENKINS ** 
 
+* manage-jenkins-> system -> sonar qube installations -> name ( SonarQube ) -> Add sonarqube url (include http:// ) and token 
 
-manage-jenkins-> system -> sonar qube installations -> name ( SonarQube ) -> Add sonarqube url (include http:// ) and token 
-
-manage-jenkins-> system -> sonar server -> for token click on ADD -> secret text -> add token in secret -> give ID ( you will  call this secret using this ID ) -> ID( sonar-token )
+* manage-jenkins-> system -> sonar server -> for token click on ADD -> secret text -> add token in secret -> give ID ( you will  call this        secret using this ID ) -> ID( sonar-token )
  
-manage-jenkins-> tools -> jdk -> give name (jdk)  -> select install automatically -> select install from adoptium.net -> select version (17.0.9)
-IF pipeline fails saying architecture not match ,then add path to it  manually   ( i manully gave path )
+* manage-jenkins-> tools -> jdk -> give name (jdk)  -> select install automatically -> select install from adoptium.net -> select version         (17.0.9)
+* IF pipeline fails saying architecture not match ,then add path to it  manually  ( i manully gave path  with name=jdk17)
 
-manage-jenkins-> tools -> sonar scanner installations -> give  name (sonar-scanner) -> select install automatically -> select version (7.0.0.4796)
+* manage-jenkins-> tools -> sonar scanner installations -> give  name (sonar-scanner) -> select install automatically -> select version           (7.0.0.4796)
 
-manage-jenkins-> tools -> nodejs -> give  name (nodejs)  -> select install automatically -> select version (17.9.0 or some require 18 version)
+* manage-jenkins-> tools -> nodejs -> give  name (nodejs)  -> select install automatically -> select version (17.9.0 or some require 18 version)
 
-manage-jenkins-> tools -> dependency check installations -> give  name (DC) -> select install automatically -> install from github -> version (12.1.0)
+* manage-jenkins-> tools -> dependency check installations -> give  name (DC) -> select install automatically -> install from github -> version   (12.1.0)
 
-add git token in jenkins : git -> settings -> developer settings -> access tokens -> generate token (classic ) -> give permissions as needed 
+* add git token in jenkins : git -> settings -> developer settings -> access tokens -> generate token (classic ) -> give permissions as needed 
 
-jenkins -> manage jenkins -> creentials -> select  user and password -> user = git hub name -> password = token generated -> give ID 
+* jenkins -> manage jenkins -> creentials -> select  user and password -> user = git hub name -> password = token generated -> give ID 
 
-** CREATE A PIPELINE ** 
+## CREATE A PIPELINE 
 
 
-for quality gate stage we have to create a webhook  inside the sonarqube to pass the result back to jenkins 
+For quality gate stage we have to create a webhook  inside the sonarqube to pass the result back to jenkins 
 
-sonarqube -> configuration -> webhooks -> create webhook -> add  url as ``` bash http://<jenkins-url>/sonarqube-webhook/ ```
+* sonarqube -> configuration -> webhooks -> create webhook -> add  url as ``` bash http://<jenkins-url>/sonarqube-webhook/ ```
 
 ```
 pipeline{
@@ -234,16 +235,16 @@ pipeline{
         }
 ```
 
+---
+Now you have to create a API (NVDAPI ) and we will use it for owasp to connect to the NVD for faster requests and scans 
 
-now you have to create a API (NVDAPI ) and we will use it for owasp to connect to the NVD for faster requests and scans 
-
-STEPS :
+### STEPS :
 
 1. go to this website
 ``` bash
 https://nvd.nist.gov/developers/request-an-api-key
 ```
-2.give random name -> your email -> personal use/ not listed ->submit -> go to our email and chek for apikey and replace below one with newone
+2.give random name -> your email -> personal use/ not listed ->submit -> go to our email and chek for apikey and replace below nvdApi key  with newone
 
 
 
@@ -263,15 +264,16 @@ stage('OWASP FS SCAN') {
 
 3. now add docker credentials to  build and push the image to docker hub
 
-manage jenkins -> credentials -> select username and password -> username = dockerhub username -> password =  token -> ID ( docker )
+* manage jenkins -> credentials -> select username and password -> username = dockerhub username -> password =  token -> ID ( docker )
 
-for token ,go to docker hub -> profile -> personal access tokens -> permisiions = read and write to pull  and push images -> generate token -> go and add it in jenkins with username and password 
+* for token ,go to docker hub -> profile -> personal access tokens -> permisiions = read and write to pull  and push images -> generate token     -> go and add it in jenkins with username and password 
 
 NOTE :
 
 docker no longer accept normal passwords,  only tokens  
 
-**** most important note *** : Dont add tools for docker , only the token is required because system architecture may different from docker tool , so DO NOT configure Docker tool installation in Jenkins.   Use system Docker directly.
+## most important note ##
+* Dont add tools for docker , only the token is required because system architecture may different from docker tool , so DO NOT configure         Docker tool installation in Jenkins.   Use system Docker directly.
 
 ``` bash
 stage("Docker Build & Push"){
@@ -304,9 +306,9 @@ steps :
 
 1. gmail -> manage accounts -> search app passwords -> name = hotstar -> copy that generated app password
   
-2. manage jenkins -> system -> Email notification -> smtp server = smtp.gmail.com -> suffix = @gmail.com -> advanced ->  use smtp authentication ,  username = your email id , password = app password generated above -> select use SSL -> SMTP port = 465 -> reply address = person email address who wants to get the reply ( usally when we get email build fail we give reply so to whom this reply has to go )
+2. manage jenkins -> system -> Email notification -> smtp server = smtp.gmail.com -> suffix = @gmail.com -> advanced ->  use smtp                  authentication ,  username = your email id , password = app password generated above -> select use SSL -> SMTP port = 465 -> reply address =    person email address who wants to get the reply ( usally when we get email build fail we give reply so to whom this reply has to go )
 
-3. manage jenkins -> system ->  Extended email notification -> smtp server = smtp.gmail.com , smtp port = 587 -> advanced -> add credentials username = your mail id ,password = app password generated above -> ID ( smtp-gmail ) -> select use TLS -> default suffix = @gmail.com -> SAVE
+3. manage jenkins -> system ->  Extended email notification -> smtp server = smtp.gmail.com , smtp port = 587 -> advanced -> add credentials      username = your mail id ,password = app password generated above -> ID ( smtp-gmail ) -> select use TLS -> default suffix = @gmail.com -> SAVE
 
 
 ``` bash
@@ -336,10 +338,11 @@ post {
        }
 ``` 
 REMEMBER :
-post stage will be at last separate code , after closing  all brackets for stages , it is not part of stages 
+
+* post stage will be at last( as separate code ), after closing  all brackets for stages , it is not part of stages , it is only part of pipeline 
 
 
-
+---
 
 COMPLETE PIPELINE :
 
@@ -447,12 +450,12 @@ post {
 }
 
 ```
+---
 
 
+#  ☸️ DEPLOYMENT PART ( EKS ) :
 
-*** DEPLOYMENT PART ( EKS ) *** 
-
-Install aws cli , kubectl , eksctl latest version 
+* Install aws cli , kubectl , eksctl latest version 
 
 ``` bash
 # Install unzip
@@ -488,9 +491,9 @@ eksctl version
 1. CONNECTING CLI TO AWS :
 
  
- * go to aws -> iam -> users -> create user ( hotstar-user ) -> attach policy directly ( administration access,, amazon ec2 full access ,, iam   full access ,, vpc full access ,, cloudfront full access ) - > done
+ * go to aws -> iam -> users -> create user ( hotstar-user ) -> attach policy directly ( administration access,, amazon ec2 full access ,, iam     full access ,, vpc full access ,, cloudfront full access ) - > done
 
- * click user created ->  create accesss key ( to connect cli to this aws ) -> select cli -> create access key -> we get access  key and secret access key ,so copy them
+ * click user created ->  create accesss key ( to connect cli to this aws ) -> select cli -> create access key -> we get access  key and secret    access key ,so copy them
 
  *  go to utm cli  and type
 ``` bash
@@ -512,10 +515,10 @@ aws ec2 describe-vpcs \
 --filters Name=isDefault,Values=true \
 --region ap-south-1
 ```  
- THis is the VPC ID 
+ This shows the VPC ID 
 
  * why vpc ?
- * An EC2 instance is a virtual server in AWS, but every server needs a network to communicate with other systems and the internet. In AWS, that network is called a VPC (Virtual Private Cloud). A VPC provides IP addresses, routing, internet connectivity, and security boundaries for AWS resources. When you create an EC2 instance, AWS must know which VPC and subnet to place it in.
+ * An EC2 instance is a virtual server in AWS, but every server needs a network to communicate with other systems and the internet. In AWS,     that network is called a VPC (Virtual Private Cloud). A VPC provides IP addresses, routing, internet connectivity, and security boundaries for AWS resources. When you create an EC2 instance, AWS must know which VPC and subnet to place it in.
    
 * This will create one node, means one ec2 instance  and a eks cluster in aws 
 ``` bash
@@ -532,9 +535,9 @@ cd K8S
 kubectl apply -f manifest.yml
 kubectl get all 
 ```
-* now copy the EXTERNAL IP  of the LOAD BALANCER service  and paste it in browser to access the application 
-
-** CLOUD FLARE  FOR DNS** 
+* now copy the EXTERNAL IP  of the LOAD BALANCER service  and paste it in browser to access the application
+  
+### CLOUD FLARE  FOR DNS :
 
 cloudflare -> DNS -> Add record -> type = CNAME ,, name = hotstar ,, target = loadbalancer service-EXTERNAL IP -> SAVE 
 
@@ -542,8 +545,8 @@ cloudflare -> DNS -> Add record -> type = CNAME ,, name = hotstar ,, target = lo
 
   ``` bash
   hotstar.cloudaseem.com 
-
-*** CREATING MONITORING SERVER USING TERRAFORM  *** 
+---
+## 📊 CREATING MONITORING SERVER USING TERRAFORM  
 
 * go to jenkins -> create a pipeline ( monitoring server ) -> add jenkins file -> then go and add two credentials( secret text ) for access key id (ID = AWS_ACCESS_KEY_ID ) and secret access key ( ID = AWS_SECRET_ACCESS_KEY ) so we will use  them in jenkins file 
 
@@ -637,7 +640,8 @@ pipeline {
 }
 
 ```
-SSH  into  monitoring-server ec2 instance using the key terra.pem  ( dont forget this chmod +x terra.pem ) dont forget that u downloaded that .pem file in mac not utm 
+---
+* SSH  into  monitoring-server ec2 instance using the key terra.pem  ( dont forget this chmod +x terra.pem ) dont forget that u downloaded that   .pem file in mac not utm 
 
 * monitoring-server -> security -> security-groups -> add inbound rules to allow ports for grafana  and all exporters 
 * clone the repo or else copy the grafana-centos.sh into this ec2 instance and run the script
@@ -653,7 +657,7 @@ email or username : admin
 password : admin
 ```
   
-** NOW DOWNLOAD PROMETHEUS AND EXPORTERS **
+##  DOWNLOAD PROMETHEUS AND EXPORTERS :
 
 * Go to this website and download required  exporters 
 
@@ -780,8 +784,7 @@ add this in the scrape_configs : ( for black box )
 for remaining exporters : ( no need of application url as these monitors machine itself )
 
 
-Prometheus and Node Exporter are running on the SAME EC2 machine then 
-targets: ['localhost:9100']
+Prometheus and Node Exporter are running on the SAME EC2 machine then  targets: ['localhost:9100']
 ``` bash
 - job_name: 'node_exporter'
     static_configs:
@@ -811,16 +814,16 @@ sudo systemctl restart prometheus
 ```
 * go to promethues (http://< server-ip or ec2 ip >:9090 )  -> targets -> u can find the state of these exporters
 
-**  CONNECTING PROMETHEUS TO GRAFANA ** 
+## CONNECTING PROMETHEUS TO GRAFANA 
 
-* go to grafana (http://<monitoring-server-ip>:3000) -> Data sources -> Add data source -> Prometheus -> click on connection and enter the url of prometheus -> save and test
+* go to grafana (http://<monitoring-server-ip>:3000) -> Data sources -> Add data source -> Prometheus -> click on connection and enter the url    of prometheus -> save and test
 
-* grafana -> Dashboards -> new dashboard -> import -> click on the grafana dashboards link -> search blackbox_exporter -> open it and copy the ID -> go back and pate the ID and click LOAD -> select the prometheus data source that we added before -> Import
+* grafana -> Dashboards -> new dashboard -> import -> click on the grafana dashboards link -> search blackbox_exporter -> open it and copy the    ID -> go back and pate the ID and click LOAD -> select the prometheus data source that we added before -> Import
 
 * Same for the nodeport exporter -> search ,copy and paste -> load
 
-
-** FINAL STEP (Destroy the resoures created ) ** 
+---
+## FINAL STEP (Destroy the resoures created ) :
 
 * Go to jenkins and build it with destroy parameter ( it will delete the created resources using terraform ) -> Monitoring server is deleted 
 * Delete the created eks cluster
@@ -830,6 +833,6 @@ eksctl delete cluster \
   --region ap-south-1
 ```
 
-* go to aws -> instances ->click  stopped instances  -> terminate all of them 
+* go to aws -> instances ->click  stopped instances  -> terminate all of them ( check manually for NAT gateway , load balancer , ec2 , auto scaling groups ) 
 
 
