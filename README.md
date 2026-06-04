@@ -68,7 +68,7 @@ cd  scripts
 chmod +x *.sh
 ```
 7. chmod +x *.sh will give permissions for execution
-** JENKINS INSTALLATION 
+### JENKINS INSTALLATION :
    
 8. Now RUN the jenkins scipt to install jenkins ( jenkins.sh for ubuntu-ec2  and jenkins-centos.sh for centos-utm )
 
@@ -111,7 +111,7 @@ docker images
 docker ps 
 ```
 --- 
-*** kubectl installation ***
+##  KUBECTL INSTALLATION  :
 
 run kubectl  script ( kubectl.sh for ubuntu and  kubectl-centos.sh for centos )
 ``` bash
@@ -160,7 +160,7 @@ http://<utm-ip>:9000
 username :admin
 password : admin
 ``` 
-* -> now we need to connect the sonarqube and jenkins ,this can be done by creating the token in sonarqube and adding it in  jenkins 
+*  now we need to connect the sonarqube and jenkins ,this can be done by creating the token in sonarqube and adding it in  jenkins 
 
 * Administration -> security -> users -> token -> generate token 
 ---
@@ -272,7 +272,7 @@ NOTE :
 
 docker no longer accept normal passwords,  only tokens  
 
-## most important note ##
+## MOST IMPORTANT NOTE : 
 * Dont add tools for docker , only the token is required because system architecture may different from docker tool , so DO NOT configure         Docker tool installation in Jenkins.   Use system Docker directly.
 
 ``` bash
@@ -455,7 +455,7 @@ post {
 
 #  ☸️ DEPLOYMENT PART ( EKS ) :
 
-* Install aws cli , kubectl , eksctl latest version 
+ Install aws cli , kubectl , eksctl latest version 
 
 ``` bash
 # Install unzip
